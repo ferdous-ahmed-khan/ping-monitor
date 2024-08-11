@@ -3,48 +3,48 @@
 require_once __DIR__ . '/Ping.php';
 require_once __DIR__ . '/Validation.php';
 
-
 use App\Validation;
 use App\Ping;
 
 class Index
 {
-
-    protected $data;
-    protected $config;
-    protected $ping;
-    protected $validation;
+    private $data;
+    private $config;
+    private $ping;
 
     public function __construct()
     {
         $this->data = require 'data.php';
         $this->config = require 'config.php';
         $this->ping = new Ping();
-        $this->validation = new Validation();
     }
-
 
     public function run()
     {
-        // Iterate over the array and ping each IP address
+        $count = $active = 0;
+
         foreach ($this->data as $item) {
+            $count++;
             $name = $item['name'];
             $ip = $item['ip'];
-            if ($this->config['os'] === 'linux') {
-                $ping = $this->ping->linuxPing($ip);
-            } elseif ($this->config['os'] === 'windows') {
-                $ping = $this->ping->windowsPing($ip);
-            }
 
+            // Select the ping method based on OS configuration
+            $pingMethod = $this->config['os'] === 'linux' ? 'linuxPing' : 'windowsPing';
+            $ping = $this->ping->$pingMethod($ip);
+
+            // Output status
             $status = $ping ? 'Active' : 'Inactive';
-            echo "$ip ----- $name ----- $status";
-            echo "<br>";
+            echo "$ip ----- $name ----- $status<br>";
+
+            if ($ping) {
+                $active++;
+            }
         }
+
+        // Output totals
+        echo "<br>Total: $count; Active: $active";
     }
 }
 
-
-
-
-$index = new Index();
-$index->run();
+// Execute the script
+(new Index())->run();
