@@ -33,8 +33,8 @@ class Index
             $ping = $this->ping->$pingMethod($ip);
 
             // Output status
-            $status = $ping ? 'Active' : 'Inactive';
-            echo "$ip ----- $name ----- $status<br>";
+            $status = $ping ? 'Active' : 'Down';
+            echo "http://$ip ----- $name ----- $status<br>";
 
             if ($ping) {
                 $active++;
