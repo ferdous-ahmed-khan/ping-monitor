@@ -34,8 +34,7 @@ class Index
 
             // Output status
             $status = $ping ? 'Active' : 'Down';
-            echo "http://$ip ----- $name ----- $status<br>";
-
+            echo "<a href=\"http://$ip\">http://$ip</a> ----- $name ----- $status<br>";
             if ($ping) {
                 $active++;
             }
